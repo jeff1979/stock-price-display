@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Prices</title>
+</head>
+<body>
+    <pre id="stock-prices"></pre>
+
+    <script>
+        function fetchStockPrice(stockSymbol) {
+            const symbolParts = stockSymbol.split('.');
+            const symbol = symbolParts[0]; // 取得"."之前的部分
+            const apiUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}`;
+
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', apiUrl, true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    const response = JSON.parse(xhr.responseText);
+                    const latestPrice = response.chart.result[0].meta.regularMarketPrice;
+                    const stockData = `${symbol}, ${latestPrice}`;
+                    document.getElementById('stock-prices').innerText += stockData + '\n';
+                }
+            };
+            xhr.send();
+        }
+
+        // 使用示例
+        const symbols = ['SPY', 'AAPL', '0050.tw'];
+        symbols.forEach(symbol => fetchStockPrice(symbol));
+    </script>
+</body>
+</html>
