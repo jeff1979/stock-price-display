@@ -12,11 +12,9 @@
         function fetchStockPrice(stockSymbol) {
             const symbolParts = stockSymbol.split('.');
             const symbol = symbolParts[0]; // 取得"."之前的部分
-						// 代理服務的URL
-            const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
             const apiUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${stockSymbol}`;
             
-            return fetch(proxyUrl + apiUrl)
+            return fetch(apiUrl)
                 .then(response => response.json())
                 .then(data => {
                     const latestPrice = data.chart.result[0].meta.regularMarketPrice;
