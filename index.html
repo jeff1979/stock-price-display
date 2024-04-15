@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Prices</title>
+</head>
+<body>
+    <pre id="stock-prices"></pre>
+
+    <script>
+        function fetchStockPrice(stockSymbol) {
+            const symbolParts = stockSymbol.split('.');
+            const symbol = symbolParts[0]; // 取得"."之前的部分
+						// 代理服務的URL
+            const apiUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${stockSymbol}`;
+            
+            return fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    const latestPrice = data.chart.result[0].meta.regularMarketPrice;
+                    return `${symbol}, ${latestPrice}`;
+                })
+                .catch(error => {
+                    console.error('Error fetching stock price:', error);
+                    return `${symbol}, Error fetching stock price`;
+                });
+        }
+
+        // 使用示例
+        const symbols = ['SPY', 'AAPL', '0050.tw'];
+        Promise.all(symbols.map(symbol => fetchStockPrice(symbol)))
+            .then(prices => {
+                const csvData = prices.join('\n');
+                document.getElementById('stock-prices').innerText = csvData;
+            });
+    </script>
+</body>
+</html>
